@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { passwordValidator } from '../../shared/validators';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -19,20 +20,20 @@ export class SignupComponent {
       validators: [Validators.required, Validators.email],
       updateOn: 'blur',
     }),
-    passwords: new FormGroup({
-      password: new FormControl('', {
-        validators: [Validators.required, Validators.minLength(6)],
+    passwords: new FormGroup(
+      {
+        password: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(6)],
+        }),
+        passwordConfirm: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(6)],
+        }),
+      },
+      {
+        validators: [passwordValidator('password', 'passwordConfirm')],
         updateOn: 'change',
-      }),
-      passwordConfirm: new FormControl('', {
-        validators: [
-          Validators.required,
-          Validators.minLength(6),
-          // equalTo(contro),
-        ],
-        updateOn: 'change',
-      }),
-    }),
+      }
+    ),
     firstName: new FormControl('', {
       validators: [Validators.required],
     }),
@@ -65,10 +66,20 @@ export class SignupComponent {
   });
 
   onSubmit() {
+    if (this.signup.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
     console.log(this.signup);
   }
 
   onReset() {
     this.signup.reset();
   }
+}
+function equalTo(
+  arg0: string,
+  arg1: string
+): import('@angular/forms').ValidatorFn {
+  throw new Error('Function not implemented.');
 }

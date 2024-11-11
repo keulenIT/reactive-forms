@@ -1,4 +1,4 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { of } from 'rxjs';
 
 export function mustContainQuestionMark(control: AbstractControl) {
@@ -14,4 +14,19 @@ export function emailIsUnique(control: AbstractControl) {
   } else {
     return of(null);
   }
+}
+
+export function passwordValidator(
+  controlName1: string,
+  controlName2: string
+): ValidatorFn {
+  return (comparison: AbstractControl) => {
+    const passwordValue = comparison.get(controlName1)?.value;
+    const confirmedPasswordValue = comparison.get(controlName2)?.value;
+
+    if (passwordValue === confirmedPasswordValue) {
+      return null;
+    }
+    return { notEqual: true };
+  };
 }
